@@ -1,4 +1,5 @@
 import entities.asset.Client;
+import entities.asset.Matter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +17,21 @@ public class Main {
                 Collections.emptyList()
         );
         System.out.println("Successfully created client with sid:" + client.getSid());
+
+
+        // Example 2 - Create Restricted matter policy, with Staffing
+        // Given client exists (see example 1)
+        // Create matter
+        Matter matter = AssetService.createMatter(
+                "TEST01",
+                "TEST01",
+                Matter.MatterSecurityPolicy.RESTRICTED,
+                client,
+                Arrays.asList("user15", "user14"),
+                Collections.emptyList()
+        );
+        System.out.println("Successfully created client with sid:" + client.getSid());
+
 
     }
 }
