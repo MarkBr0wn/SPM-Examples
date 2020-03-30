@@ -1,8 +1,5 @@
-import com.google.gson.reflect.TypeToken;
 import entities.User;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +19,7 @@ public class UserService {
 
         RestHelper helper = new RestHelper();
 
-        String uri = Endpoints.TRUSTEE_FETCH +
+        String uri = Constants.TRUSTEE_FETCH +
                 "?" +
                 userNames.stream().map(name -> "name=" + name)
                 .collect(Collectors.joining("&"));

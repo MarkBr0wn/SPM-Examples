@@ -1,11 +1,15 @@
 import com.google.gson.Gson;
 import entities.ConflictedUser;
-import entities.User;
 import entities.asset.Asset;
 import entities.asset.Client;
 import entities.asset.Matter;
+import entities.opposingsets.OpposingSet;
+import entities.opposingsets.OpposingSetSide;
+import entities.opposingsets.OpposingSetSideAsset;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +31,7 @@ public class AssetService {
         client.setAssetTeam(userService.resolveUsers(teamMembers));
         client.setAdditionalUsers(userService.resolveUsers(basicTeamMembers));
 
-        return helper.postAndGet(Endpoints.ASSET_POST, new Gson().toJson(client), Client.class);
+        return helper.postAndGet(Constants.ASSET_POST, new Gson().toJson(client), Client.class);
     }
 
     public static Matter createMatter(String displayId,
@@ -48,7 +52,7 @@ public class AssetService {
         matter.setAssetTeam(userService.resolveUsers(teamMembers));
         matter.setAdditionalUsers(userService.resolveUsers(basicTeamMembers));
 
-        return helper.postAndGet(Endpoints.ASSET_POST, new Gson().toJson(matter), Matter.class);
+        return helper.postAndGet(Constants.ASSET_POST, new Gson().toJson(matter), Matter.class);
     }
 
     public static ResponseEntity<Object> addConflicts(Asset asset,
@@ -61,6 +65,29 @@ public class AssetService {
                 .map(u -> new ConflictedUser(u, asset))
                 .collect(Collectors.toList());
 
-        return helper.post(Endpoints.CONFLICTS_POST, new Gson().toJson(conflictedUsers));
+        return helper.post(Constants.CONFLICTS_POST, new Gson().toJson(conflictedUsers));
+    }
+
+    public static ResponseEntity<Object> opposeAssets(String displayId,
+                                                      String displayName,
+                                                      Asset... assets) {
+
+        RestHelper helper = new RestHelper();
+
+        OpposingSet opposingSet = new OpposingSet();
+        opposingSet.setDisplayId(displayId);
+        opposingSet.setDisplayName(displayName);
+
+        List<OpposingSetSide> sides = new ArrayList<>();
+        for (Asset asset : assets) {
+            OpposingSetSide side = new OpposingSetSide();
+            OpposingSetSideAsset opposingSetSideAsset = new OpposingSetSideAsset(asset);
+            side.setAssets(Collections.singletonList(opposingSetSideAsset));
+            sides.add(side);
+        }
+
+        opposingSet.setSides(sides);
+
+        return helper.post(Constants.OTS_POST, new Gson().toJson(opposingSet));
     }
 }

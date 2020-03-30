@@ -40,7 +40,7 @@ public class AuthenticationManager {
         headers.add("Authorization", basicAuth);
         HttpEntity<String> request = new HttpEntity<>("", headers);
 
-        ResponseEntity<JsonNode> curJWT = rest.exchange("{wallServerUrl}" + Endpoints.AUTHENTICATE, HttpMethod.GET, request, JsonNode.class, url);
+        ResponseEntity<JsonNode> curJWT = rest.exchange("{wallServerUrl}" + Constants.AUTHENTICATE, HttpMethod.GET, request, JsonNode.class, url);
         return new AuthResponse(curJWT.getBody(), curJWT.getBody().findValue(ACCESS_TOKEN) != null);
     }
 }

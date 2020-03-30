@@ -1,10 +1,8 @@
 import com.google.gson.Gson;
 import entities.User;
-import entities.asset.Client;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -37,14 +35,14 @@ public class RestHelper {
     public String authenticate(String username, String password) {
         AuthenticationManager authenticationManager = new AuthenticationManager();
         RestTemplate restTemplate = new RestTemplate();
-        AuthenticationManager.AuthResponse response = authenticationManager.authenticate(restTemplate, Endpoints.BASE_URL, username, password);
+        AuthenticationManager.AuthResponse response = authenticationManager.authenticate(restTemplate, Constants.BASE_URL, username, password);
         return response.getToken();
     }
 
     public <T> ResponseEntity<T> get(String uri, Class<T> clazz) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + currentLogin());
-        headers.add("Content-Type", Endpoints.JSON_TYPE);
+        headers.add("Content-Type", Constants.JSON_TYPE);
         HttpEntity<?> httpEntity = new HttpEntity<String>(headers);
         ResponseEntity<String> response = getRestTemplate().exchange(uri, HttpMethod.GET, httpEntity, String.class);
 
@@ -55,7 +53,7 @@ public class RestHelper {
     public List<User> resolveUsers(String uri) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + currentLogin());
-        headers.add("Content-Type", Endpoints.JSON_TYPE);
+        headers.add("Content-Type", Constants.JSON_TYPE);
         HttpEntity<?> httpEntity = new HttpEntity<String>(headers);
         ResponseEntity<String> response = getRestTemplate().exchange(uri, HttpMethod.GET, httpEntity, String.class);
 
@@ -71,7 +69,7 @@ public class RestHelper {
     public ResponseEntity<Object> post(String uri, String content) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + currentLogin());
-        headers.add("Content-Type", Endpoints.JSON_TYPE);
+        headers.add("Content-Type", Constants.JSON_TYPE);
         HttpEntity<?> httpEntity = new HttpEntity<Object>(content, headers);
         ResponseEntity<String> response = getRestTemplate().exchange(uri, HttpMethod.POST, httpEntity, String.class);
         return new ResponseEntity<>(content, response.getHeaders(), response.getStatusCode());
